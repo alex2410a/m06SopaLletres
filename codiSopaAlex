@@ -1,0 +1,140 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Text;
+
+namespace MatrizFichero
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            
+
+            try
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                Directory.SetCurrentDirectory(paths);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine("No s'ha trobat el directori" + Environment.NewLine);
+                Console.WriteLine("Creant...");
+                string newDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                Thread.Sleep(2000);
+                Directory.CreateDirectory(newDirectory);
+                if (Directory.Exists(newDirectory))
+                {
+                    Console.WriteLine("Creat satisfactoriament!");
+                }
+            }
+
+            try
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                string f = "sopalletres1.txt"; //nombreFitxeroOriginalConTextoPlano
+                string f1 = "sopalletres.txt"; //nombreFitxeroSalidaConSoplaDeLetras
+
+                string fullPath = Path.Combine(paths + f);
+                string fullPath1 = Path.Combine(paths + f1);
+                Directory.SetCurrentDirectory(paths);
+                char[] delimiterChars = { ' ', ',', '.', ':', '\t' };  //Creo un Char Array para decirle que 
+                //me ignore cualquier tipo de caracter incluso espacios. 
+                
+                char[,] mok = new char[10,10];//Matriz de datos Char de 10x10
+                Console.WriteLine(Environment.NewLine + "Mostrant previsualització del que apareixerà en el fitxer...");
+                Thread.Sleep(2000);
+
+                if (File.Exists(f))
+                {
+                    using (StreamReader sr = new StreamReader(f)) //Empiezo a leer el texto
+                    {
+                        string line;
+
+                        while ((line = sr.ReadLine()) != null) //Leo hasta que no quede nada
+                        {
+                            string[] values = line.Split(delimiterChars);
+
+                            for (int i = 0; i < values.Length; i++)//recorremos filas
+                            {
+                                for (int c = 0; c < values.Length; c++) // recorremos columnas
+                                {
+                                    for (int h = 0; h < c; h++) //recorremos elementos de las palabras
+                                    {
+
+                                        mok[i, c] = values[i].ElementAt(h);//recorremos el primer Char hasta el ultimo h++
+
+                                    }
+                                    Console.Write("{0}" + " ", Char.ToUpper(mok[i, c]));
+
+
+                                }
+
+                                Console.WriteLine();//cada vez que encuentre la palabra más larga(salto de pagina con la siguiente) 
+                            }
+                            line = sr.ReadLine();
+                        }
+                        sr.Close();
+                    }
+
+                    Console.WriteLine("Prem qualsevol tecla per continuar y escriure al fitxer");
+                    Console.ReadKey(); 
+
+
+                    /*PARTE DE INTENTAR ESCRIBIR LO RECOGIDO ARRIBA EN UN FICHERO SALIDA (F1) sopalletres.txt*/
+                    
+                    Console.Clear();
+                    Console.WriteLine("Creant sopa de lletres en fitxer...");
+                    Thread.Sleep(2000);
+
+                    if (!File.Exists(f1)) //Si no existe sopalletres.txt (fitxer sortida)
+                    {
+                        File.Create(f1); //Crea sopalletres.txt
+                    }
+                    else
+                    {
+                        Directory.SetCurrentDirectory(paths);
+                        /*
+                        string content = File.ReadAllText(f);
+                        string[] contentSenseEspais = content.Split(delimiterChars);
+                        using (var writer = new StreamWriter(f1))
+                        {
+                            using (var reader = new StreamReader(f))
+                            {
+
+                                // Redirect standard output from the console to the output file.
+                                Console.SetOut(writer);
+                                // Redirect standard input from the console to the input file.
+                                Console.SetIn(reader);
+                                string line;
+                                while ((line = Console.ReadLine()) != null)
+                                {
+                                    string newLine = line.Replace(("").PadRight(4, ' '), "\t");
+                                    Console.WriteLine(newLine);
+                                }
+                            }
+                        }
+                        */
+                        Console.WriteLine("S'ha creat correctament!");
+                    }
+
+
+                }
+                else
+                {
+                    File.ReadAllText(f); //Fuerzo a la excepción del Try para que vaya el catch en caso de error
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(Environment.NewLine + "Problemes al obrir fitxer {0}" + e.Message, Environment.NewLine);
+                Console.WriteLine("Pot ser no existeix MegaCrack??");
+                Console.ReadKey();
+            }
+
+        }
+        
+        
+    }
+}
