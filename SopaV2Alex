@@ -1,0 +1,419 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Text;
+using System.Collections.Generic;
+
+namespace MatrizFichero
+{
+    class Program
+    {
+        private static object p_Soup;
+
+        static void Main(string[] args)
+        {
+            try
+            {
+
+                Console.WriteLine("Introdueix la opció per provar el programa: ");
+                Console.WriteLine();
+                Console.WriteLine("1. Prova Codi Alex cogerDirectoriAlex()");
+                Console.WriteLine("2. Prova Codi Jaume");
+                Console.WriteLine("3. Codi prova pagina web");
+                Console.WriteLine("4. Codi generic de proves a lo desesperacion");
+                int a = int.Parse(Console.ReadLine());
+
+                do
+                {
+
+                    switch (a)
+                    {
+                        case 1:
+                            cogerDirectorioAlex();
+                            Console.ReadKey();
+                            break;
+
+
+                        case 4:
+                            provaRandomInternet();
+                            Console.ReadKey();
+                            break;
+
+                        case 0:
+                            break;
+
+
+                    }
+
+
+                } while (a < 0);
+
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Has posat un numero MegaCrack?");
+            }
+
+            
+
+        }
+
+
+
+        public static void cogerDirectorioAlex()
+        {
+
+
+            try
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                Directory.SetCurrentDirectory(paths);
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine("No s'ha trobat el directori" + Environment.NewLine);
+                Console.WriteLine("Creant...");
+                string newDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                Thread.Sleep(2000);
+                Directory.CreateDirectory(newDirectory);
+                if (Directory.Exists(newDirectory))
+                {
+                    Console.WriteLine("Creat satisfactoriament!");
+                }
+            }
+
+            try
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                string f = "sopalletres1.txt"; //nombreFitxeroOriginalConTextoPlano
+                string f1 = "sopalletres.txt"; //nombreFitxeroSalidaConSoplaDeLetras
+
+                Directory.SetCurrentDirectory(paths);
+                char[] delimiterChars = { ' ', ',', '.', ':', '\t' };  //Creo un Char Array para decirle que 
+                                                                       //me ignore cualquier tipo de caracter incluso espacios. 
+
+                char[,] mok = new char[10, 10];//Matriz de datos Char de 10x10
+                Console.WriteLine(Environment.NewLine + "Mostrant previsualització del que apareixerà en el fitxer...");
+                Thread.Sleep(2000);
+
+                if (File.Exists(f))
+                {
+                    using (StreamReader sr = new StreamReader(f)) //Empiezo a leer el texto
+                    {
+                        string line;
+
+                        while ((line = sr.ReadLine()) != null) //Leo hasta que no quede nada
+                        {
+
+                            string[] values = line.Split(delimiterChars);
+
+
+                            for (int i = 0; i < values.Length; i++)//recorremos filas
+                            {
+                                for (int c = 0; c < values.Length; c++) // recorremos columnas
+                                {
+                                    for (int h = 0; h < c; h++) //recorremos elementos de las palabras
+                                    {
+
+                                        mok[i, c] = values[i].ElementAt(h);//recorremos el primer Char hasta el ultimo h++
+
+                                    }
+                                    Console.Write("{0}" + " ", Char.ToUpper(mok[i, c]));
+
+
+                                }
+
+                                Console.WriteLine();//cada vez que encuentre la palabra más larga(salto de pagina con la siguiente) 
+                            }
+                            line = sr.ReadLine();
+                        }
+                        sr.Close();
+                    }
+
+                    Console.WriteLine("Prem qualsevol tecla per continuar y escriure al fitxer");
+                    Console.ReadKey();
+
+
+                    /*PARTE DE INTENTAR ESCRIBIR LO RECOGIDO ARRIBA EN UN FICHERO SALIDA (F1) sopalletres.txt*/
+
+                    Console.Clear();
+                    Console.WriteLine("Creant sopa de lletres en fitxer...");
+                    Thread.Sleep(2000);
+
+                    if (!File.Exists(f1)) //Si no existe sopalletres.txt (fitxer sortida)
+                    {
+                        File.Create(f1); //Crea sopalletres.txt
+                    }
+                    else
+                    {
+                        Directory.SetCurrentDirectory(paths);
+                        /*
+                        string content = File.ReadAllText(f);
+                        string[] contentSenseEspais = content.Split(delimiterChars);
+                        using (var writer = new StreamWriter(f1))
+                        {
+                            using (var reader = new StreamReader(f))
+                            {
+
+                                // Redirect standard output from the console to the output file.
+                                Console.SetOut(writer);
+                                // Redirect standard input from the console to the input file.
+                                Console.SetIn(reader);
+                                string line;
+                                while ((line = Console.ReadLine()) != null)
+                                {
+                                    string newLine = line.Replace(("").PadRight(4, ' '), "\t");
+                                    Console.WriteLine(newLine);
+                                }
+                            }
+                        }
+                        */
+                        Console.WriteLine("S'ha creat correctament!");
+                    }
+
+
+                }
+                else
+                {
+                    File.ReadAllText(f); //Fuerzo a la excepción del Try para que vaya el catch en caso de error
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(Environment.NewLine + "Problemes al obrir fitxer {0}" + e.Message, Environment.NewLine);
+                Console.WriteLine("Pot ser no existeix MegaCrack??");
+                Console.ReadKey();
+            }
+
+        }
+
+
+        public static void provaRandomInternet()
+        {
+
+            string[] strSoupHor;
+            string[] strSoupVer;
+
+
+            char[,] soup = new char[12, 12];
+
+            void mostraMatriuAPartirDeFitxer()
+            {             
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                string fitxer = "sopalletres1.txt";
+                Random generador = new Random();
+                
+                try
+                {
+                    Directory.SetCurrentDirectory(paths);
+
+                    using (StreamReader sr = new StreamReader(fitxer))
+                    {
+                        string line;
+
+                        while ((line = sr.ReadLine()) != null) //Leo hasta que no quede nada
+                        {
+                            string[] words = line.Split(';', ',');
+
+                            Array listaPalabraFitxer = words;
+                            int aleatorio = generador.Next(listaPalabraFitxer.Length);
+
+                            
+
+                            for (int i = 0; i < 15; i++)//recorremos filas
+                            {
+                                try {
+                                    for (int c = 0; c < 15; c++) // recorremos columnas
+                                    {
+                                        for (int h = 0; h < c; h++) //recorremos elementos de las palabras
+                                        {
+                                            try
+                                            {
+                                                soup[i, c] = words[i].ElementAt(h);//recorremos el primer Char hasta el ultimo h++
+                                            }
+                                            catch (ArgumentOutOfRangeException)
+                                            {
+
+                                                soup[i, c] = (char)(generador.Next(26) + 65);
+
+                                            }
+
+                                        }
+                                        Console.Write("{0}" + " ", Char.ToUpper(soup[i, c]));
+
+                                    }
+
+                                    Console.WriteLine();//cada vez que encuentre la palabra más larga(salto de pagina con la siguiente) 
+
+                                }catch(ArgumentOutOfRangeException)
+                                {
+                                    soup[15, 15] = (char)(generador.Next(26) + 65);
+                                }
+                            }
+                            GetStringsSoup();
+                            line = sr.ReadLine();
+
+                        }
+                    }
+
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+            }
+
+            void escriuMatriuEnFitxer()
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                string fitxer = "sopalletres1.txt";
+                string fitxer1 = "sopalletres.txt";
+
+                try
+                {
+                    Directory.SetCurrentDirectory(paths);
+                    using (StreamReader sr = new StreamReader(fitxer))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null) //Leo hasta que no quede nada
+                        {
+                            string[] words = line.Split(';', ',');
+
+                            using (StreamWriter sw = new StreamWriter(fitxer1))
+                            {
+                                for (int f = 0; f < Math.Sqrt(soup.Length); f++)
+                                {
+                                    for (int c = 0; c < Math.Sqrt(soup.Length); c++)
+                                    {
+                                        
+                                        sw.Write("{0}" + " " ,Char.ToUpper(soup[f,c]));
+                                    }
+                                    sw.WriteLine();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            void afegirParaulesSopa()
+            {
+                string paths = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\SopaLletres";
+                string fitxer = "sopalletres1.txt";
+           
+
+                try
+                {
+                    Directory.SetCurrentDirectory(paths);
+
+                    using (StreamWriter sw = File.AppendText(fitxer))
+                    {
+                        
+                        Console.WriteLine("Introdueix la paraula que vols afegir");
+                        string p = Console.ReadLine().ToUpper();
+                        do
+                        {              
+                            sw.Write("," + p);
+                            Console.WriteLine("Prem tecla per sortir");
+                           
+                        }
+                        while (p == "exit");
+
+                        
+                        
+
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+
+            void GetStringsSoup()
+            {
+                int x = soup.GetLength(0);
+                int y = soup.GetLength(1);
+
+                strSoupVer = new string[y];
+                strSoupHor = new string[x];
+                // Conformamos las cadenas horizontales
+                for (int i = 0; i < x; i++)
+                    for (int j = 0; j < y; j++)
+                        strSoupHor[i] += soup[i, j].ToString();
+                // Conformamos las cadenas verticales con tan sólo
+                // invertir el orden de los for
+                for (int j = 0; j < y; j++)
+                    for (int i = 0; i < x; i++)
+                        strSoupVer[j] += soup[i, j].ToString();
+                        
+            }
+
+            void SearchWord(string p_Word, string[] p_SoupStrings)
+            {
+                try
+                {
+                    for (int i = 0; i < soup.GetLength(0); i++)
+                    {
+                        if (p_SoupStrings[i].Contains(p_Word))
+                        {
+                            Console.WriteLine("Paraula " + p_Word + " trobada!");
+                            
+                        }
+
+                    }
+                    Console.ReadKey();
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                
+            }
+
+
+
+            mostraMatriuAPartirDeFitxer();
+
+            Console.WriteLine("Quieres escribir la matriz en fichero? S/N");
+            string p1 = Console.ReadLine().ToUpper();
+            if (p1.Equals("S"))
+            {
+                escriuMatriuEnFitxer();
+            }
+            
+            GetStringsSoup();
+            /*Console.WriteLine("Introdueix la paraula que vols buscar");
+            string palabra = Console.ReadLine();
+            
+            SearchWord(palabra, strSoupHor);
+            SearchWord(palabra, strSoupVer);*/
+
+            Console.WriteLine("Vols introduir noves paraules a la sopa? S/N");
+            string p = Console.ReadLine().ToUpper();
+
+            if (p.Equals("S"))
+            {
+                afegirParaulesSopa();
+            }
+            else
+            {
+                Console.WriteLine("Tancant...");
+            }
+            
+            
+
+
+        }
+
+
+    }
+}
